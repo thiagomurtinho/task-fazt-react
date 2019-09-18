@@ -5,7 +5,8 @@ import './App.css'
 // import Navigation from './components/nav'
 import { todos } from './data/todos.json'
 
-console.log(todos);
+// subcomponents
+import TodoForm from './components/TodoForm';
 
 
 class App extends Component {
@@ -15,14 +16,30 @@ class App extends Component {
     this.state = {
       todos
     }
+    this.handleAddTodo = this.handleAddTodo.bind(this)
   }
+
+  handleAddTodo(todo) {
+    this.setState({
+      todos: [...this.state.todos, todo]
+    })
+  }
+
+  removeTodo(index) {
+    this.setState({
+      todos: this.state.todos.filter((e,i) => {
+        return i !== index
+      })
+    })
+  }
+
   render() {
     const todos = this.state.todos.map((todos, i) => {
       return(
-        <div className="col-md-4">
+        <div className="col-md-4" key={ i }>
           <div className="card mt-4">
             <div className="card-header">
-              { todos.title }
+              <h3>{ todos.title }</h3>
               <span className="badge badge-pill badge-danger ml-2">
                 { todos.priority }
               </span>
@@ -32,28 +49,46 @@ class App extends Component {
               <p><mark>{ todos.responsible }</mark></p>
 
             </div>
+            <div className="card-footer">
+              <button
+                className="btn btn-danger"
+                onClick= { this.removeTodo.bind(this, i) }>
+                 Delete
+                </button>
+            </div>
           </div>
         </div>
       )
     } )
+
     return (
       <div className="App">
         {/* <Navigation title="Task"/> */}
         <nav className="navbar navbar-dark bg-dark">
-                <a href="">
+                <a href="index.html">
                   Task
                   <span className="badge badge-pill badge-light ml-2">
                     { this.state.todos.length }
                   </span>
                 </a>
+        </nav>
 
-            </nav>
         <div className="container">
           <div className="row mt-4">
-            { todos } 
+
+            <div className="col-md-4 text-center">
+              <img src={ logo } className="App-logo" alt="logo" />
+              <TodoForm onAddTodo ={ this.handleAddTodo }/>
+            </div>
+
+            <div className="col-md-8">
+              <div className="row">
+                { todos } 
+              </div>
+            </div>
+
           </div>
         </div>
-      <img src={logo} className="App-logo" alt="logo" />
       </div>
     );
   }
